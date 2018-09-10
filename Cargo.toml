@@ -1,0 +1,12 @@
+[package]
+name = "serenv"
+version = "0.1.0"
+authors = ["Peter Williams <peter@newton.cx>"]
+
+[dependencies]
+bincode = "^1.0"
+failure = "^0.1"
+serde = "^1.0"
+serde_derive = "^1.0"
+shell-escape = "^0.1"
+structopt = "^0.2"
