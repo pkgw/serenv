@@ -174,8 +174,7 @@ impl SavedEnvironment {
     }
 }
 
-/// A helper trait for making emission pluggible
-
+/// A helper trait for making emission pluggable.
 trait EmitChanges {
     fn emit_unset(&mut self, key: &OsStr);
     fn emit_assign(&mut self, key: &OsStr, value: &OsStr);
