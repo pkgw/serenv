@@ -3,25 +3,24 @@
 
 /// A tiny tool to save the current process environment to disk,
 /// and recover it later.
-
 // TODO all over here: avoid conversions to Cow<str>?
-
 extern crate bincode;
 extern crate failure;
 extern crate serde;
-#[macro_use] extern crate serde_derive;
+#[macro_use]
+extern crate serde_derive;
 extern crate shell_escape;
-#[macro_use] extern crate structopt;
+#[macro_use]
+extern crate structopt;
 
 use bincode::{deserialize_from, serialize_into};
-use failure::{Error};
+use failure::Error;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs::File;
 use structopt::StructOpt;
-
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "serenv", about = "Save and restore the shell environment.")]
@@ -54,10 +53,8 @@ fn main() -> Result<(), Error> {
     program.cli()
 }
 
-
 #[derive(Debug, StructOpt)]
-struct SerenvEmitCmdOptions {
-}
+struct SerenvEmitCmdOptions {}
 
 impl SerenvEmitCmdOptions {
     fn cli(self) -> Result<(), Error> {
@@ -73,7 +70,10 @@ struct EmitCmdChanges {}
 
 impl EmitChanges for EmitCmdChanges {
     fn emit_unset(&mut self, key: &OsStr) {
-        println!("set {}=", shell_escape::windows::escape(key.to_string_lossy()));
+        println!(
+            "set {}=",
+            shell_escape::windows::escape(key.to_string_lossy())
+        );
     }
 
     fn emit_assign(&mut self, key: &OsStr, value: &OsStr) {
@@ -82,10 +82,8 @@ impl EmitChanges for EmitCmdChanges {
     }
 }
 
-
 #[derive(Debug, StructOpt)]
-struct SerenvEmitShOptions {
-}
+struct SerenvEmitShOptions {}
 
 impl SerenvEmitShOptions {
     fn cli(self) -> Result<(), Error> {
@@ -101,20 +99,23 @@ struct EmitShChanges {}
 
 impl EmitChanges for EmitShChanges {
     fn emit_unset(&mut self, key: &OsStr) {
-        println!("unset {};", shell_escape::unix::escape(key.to_string_lossy()));
+        println!(
+            "unset {};",
+            shell_escape::unix::escape(key.to_string_lossy())
+        );
     }
 
     fn emit_assign(&mut self, key: &OsStr, value: &OsStr) {
-        println!("export {}={};",
-                 shell_escape::unix::escape(key.to_string_lossy()),
-                 shell_escape::unix::escape(value.to_string_lossy()));
+        println!(
+            "export {}={};",
+            shell_escape::unix::escape(key.to_string_lossy()),
+            shell_escape::unix::escape(value.to_string_lossy())
+        );
     }
 }
 
-
 #[derive(Debug, StructOpt)]
-struct SerenvSaveOptions {
-}
+struct SerenvSaveOptions {}
 
 impl SerenvSaveOptions {
     fn cli(self) -> Result<(), Error> {
@@ -124,7 +125,6 @@ impl SerenvSaveOptions {
         Ok(())
     }
 }
-
 
 /// The structure that (de)serializes the environment.
 #[derive(Debug, Deserialize, Serialize)]
@@ -150,7 +150,7 @@ impl SavedEnvironment {
             match self.env.get(&os_key) {
                 None => {
                     emitter.emit_unset(&os_key);
-                },
+                }
 
                 Some(saved_value) => {
                     if &os_value == saved_value {
@@ -173,7 +173,6 @@ impl SavedEnvironment {
         }
     }
 }
-
 
 /// A helper trait for making emission pluggible
 
